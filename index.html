@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f7fb">
+  <title>Legajos | Gestión de personal</title>
+  <link rel="stylesheet" href="static/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script defer src="js/app.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-icon">L</div><div><strong>Legajos</strong><small>Gestión de personal</small></div></div>
+      <div class="nav-label">MENÚ PRINCIPAL</div>
+      <button class="nav-item active" id="nav-home"><span>▦</span> Panel general</button>
+      <button class="nav-item" id="nav-import"><span>↥</span> Importar archivos</button>
+      <div class="sidebar-bottom"><span class="status-dot"></span> Prototipo local<br><small>Datos guardados en este navegador</small></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div><div class="eyebrow">ADMINISTRACIÓN DE PERSONAL</div><h1>Legajos de empleados</h1><p class="subtitle">Encontrá y consultá la información del personal desde un solo lugar.</p></div>
+        <button class="primary-btn" id="top-import">＋ Importar Excel</button>
+      </header>
+
+      <section class="notice" id="privacy-notice">
+        <span class="notice-icon">ⓘ</span>
+        <div><strong>Versión de prueba</strong><p>Los datos se guardan únicamente en este navegador. No cargues legajos reales ni información sensible: esta página no tiene servidor, usuarios ni permisos de acceso.</p></div>
+        <button class="icon-btn" id="dismiss-notice" aria-label="Cerrar aviso">×</button>
+      </section>
+
+      <section class="stats">
+        <article class="stat-card"><div class="stat-symbol purple">▤</div><div><span>Total de legajos</span><strong id="stat-total">0</strong><small>Personas registradas</small></div></article>
+        <article class="stat-card"><div class="stat-symbol blue">⌕</div><div><span>Resultados visibles</span><strong id="stat-visible">0</strong><small>Según tu búsqueda</small></div></article>
+        <article class="stat-card"><div class="stat-symbol green">↥</div><div><span>Archivos importados</span><strong id="stat-files">0</strong><small>En esta sesión de navegador</small></div></article>
+      </section>
+
+      <section class="content-card" id="directory">
+        <div class="section-head"><div><h2>Directorio de empleados</h2><p>Buscá por número de legajo, nombre, apellido o sector.</p></div><button class="secondary-btn" id="export-btn">↓ Exportar CSV</button></div>
+        <div class="search-row">
+          <div class="searchbox"><span>⌕</span><input id="search-input" type="search" placeholder="Ej. 00452, María Pérez, Producción..." autocomplete="off"></div>
+          <button class="secondary-btn" id="clear-search">Limpiar</button>
+        </div>
+        <div class="table-wrap">
+          <table><thead><tr><th>N.º DE LEGAJO</th><th>EMPLEADO</th><th>ÁREA / SECTOR</th><th>PUESTO</th><th>ESTADO</th><th></th></tr></thead><tbody id="employee-rows"></tbody></table>
+          <div class="empty-state" id="empty-state"><div class="empty-icon">▤</div><h3>Todavía no hay legajos</h3><p>Importá uno o varios Excel para empezar a armar el directorio.</p><button class="primary-btn" id="empty-import">Importar archivos</button></div>
+        </div>
+        <div class="table-footer"><span id="table-count">0 empleados</span><button class="text-btn danger-text" id="clear-all">Eliminar todos los datos de este navegador</button></div>
+      </section>
+      <footer>Legajos · Prototipo estático para pruebas</footer>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="import-modal" role="dialog" aria-modal="true" aria-labelledby="import-title">
+    <div class="modal">
+      <div class="modal-head"><div><div class="eyebrow">CARGA DE INFORMACIÓN</div><h2 id="import-title">Importar archivos</h2><p>Seleccioná varios Excel o CSV para combinarlos por número de legajo.</p></div><button class="icon-btn close-modal" aria-label="Cerrar">×</button></div>
+      <label class="dropzone" for="file-input"><div class="upload-icon">↥</div><strong>Elegí los archivos para importar</strong><span>Formatos admitidos: .xlsx, .xls y .csv</span><em>Podés seleccionar más de uno</em><input id="file-input" type="file" multiple accept=".xlsx,.xls,.csv"></label>
+      <div id="selected-files" class="selected-files">Ningún archivo seleccionado</div>
+      <div class="field-note"><strong>Cómo se combinan:</strong> la aplicación busca una columna que se llame “Legajo” o “Número de legajo”. Si un legajo aparece en varios archivos, combina sus columnas y conserva los datos ya cargados cuando el nuevo archivo trae una celda vacía.</div>
+      <div id="import-message" class="import-message hidden"></div>
+      <div class="modal-actions"><button class="secondary-btn close-modal">Cancelar</button><button class="primary-btn" id="do-import" disabled>Importar y combinar</button></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profile-title">
+    <div class="modal profile-modal">
+      <div class="modal-head"><div><div class="eyebrow">FICHA INDIVIDUAL</div><h2 id="profile-title">Perfil del empleado</h2><p id="profile-subtitle"></p></div><button class="icon-btn close-profile" aria-label="Cerrar">×</button></div>
+      <div id="profile-content" class="profile-grid"></div>
+      <div class="modal-actions"><button class="secondary-btn close-profile">Cerrar ficha</button></div>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+</body>
+</html>
